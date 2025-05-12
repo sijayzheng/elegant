@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: elegant
+  main:
+    banner-mode: off
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: false
+    serialization:
+      fail-on-empty-beans: false
+    date-format: yyyy-MM-dd HH:mm:ss
+  profiles:
+    active: dev
