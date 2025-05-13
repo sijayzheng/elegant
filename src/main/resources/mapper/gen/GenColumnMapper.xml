@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.sijay.elegant.gen.mapper.GenColumnMapper">
+    <select id="listByTableName" resultType="cn.sijay.elegant.gen.entity.GenColumn">
+        select column_name,
+               column_comment,
+               data_type,
+               ordinal_position                                    as sort,
+               is_nullable = 'yes'                                 as nullable,
+               ifnull(character_maximum_length, numeric_precision) as length,
+               column_key = 'PRI'                                  as is_pk
+        from information_schema.columns
+        where table_schema = 'elegant'
+          and table_name = 'system_user'
+        order by ordinal_position
+    </select>
+</mapper>
