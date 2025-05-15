@@ -23,16 +23,27 @@ public class GenTable implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id(keyType = KeyType.Auto)
+    @Column("id")
     private Long id;
+    @Column("table_name")
     private String tableName;
+    @Column("table_comment")
     private String tableComment;
+    @Column("module_name")
     private String moduleName;
+    @Column("class_name")
     private String className;
+    @Column("class_comment")
     private String classComment;
+    @Column("is_tree")
     private Boolean isTree;
+    @Column("parent_menu_id")
     private Long parentMenuId;
+    @Column("tree_key")
     private String treeKey;
+    @Column("tree_label")
     private String treeLabel;
+    @Column("tree_parent_key")
     private String treeParentKey;
 
     @Column(ignore = true)

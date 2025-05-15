@@ -20,29 +20,47 @@ import java.io.Serializable;
  */
 
 @Data
-@Table("gen_table")
+@Table("gen_column")
 public class GenColumn implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
 
     @Id(keyType = KeyType.Auto)
+    @Column("id")
     private Long id;
+    @Column("column_name")
     private String columnName;
+    @Column("column_comment")
     private String columnComment;
+    @Column("table_id")
     private Long tableId;
+    @Column("is_pk")
     private Boolean isPk;
+    @Column("sort")
     private Integer sort;
+    @Column("nullable")
     private Boolean nullable;
+    @Column("length")
     private Long length;
+    @Column("data_type")
     private String dataType;
+    @Column("java_field")
     private String javaField;
+    @Column("java_type")
     private JavaTypeEnum javaType;
+    @Column("listable")
     private Boolean listable;
+    @Column("editable")
     private Boolean editable;
+    @Column("queryable")
     private Boolean queryable;
+    @Column("exportable")
     private Boolean exportable;
+    @Column("html_type")
     private HtmlTypeEnum htmlType;
+    @Column("query_type")
     private QueryTypeEnum queryType;
+    @Column("dict_type")
     private String dictType;
 
     @Column(ignore = true)
