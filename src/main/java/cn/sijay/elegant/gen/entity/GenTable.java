@@ -35,8 +35,8 @@ public class GenTable implements Serializable {
     private String className;
     @Column("class_comment")
     private String classComment;
-    @Column("is_tree")
-    private Boolean isTree;
+    @Column("tree_show")
+    private Boolean treeShow;
     @Column("parent_menu_id")
     private Long parentMenuId;
     @Column("tree_key")

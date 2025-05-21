@@ -2,6 +2,8 @@ package cn.sijay.elegant.core.base;
 
 import lombok.Data;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -11,7 +13,10 @@ import java.time.LocalDateTime;
  * @since 2025-05-09
  */
 @Data
-public class BaseEntity {
+public abstract class BaseEntity implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     private Long createDept;
     private Long createBy;
     private LocalDateTime createTime;

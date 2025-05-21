@@ -57,7 +57,18 @@ public class FileUtil {
      * @param content 内容
      */
     public static void writeFile(String path, String content) {
-        writeFile(new File(path), content);
+        File file = new File(path);
+        if (!file.exists()) {
+            try {
+                if (!file.getParentFile().exists()) {
+                    Files.createDirectories(file.getParentFile().toPath());
+                }
+                Files.createFile(file.toPath());
+            } catch (Exception e) {
+                log.error("create file error", e);
+            }
+        }
+        writeFile(file, content);
     }
 
     /**

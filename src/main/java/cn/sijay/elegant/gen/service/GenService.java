@@ -125,16 +125,18 @@ public class GenService {
                      table.setModuleName(StringUtils.substringBefore(tableName, "_"));
                      table.setClassName(NameUtil.snakeToUpperCamel(table.getTableName()));
                      table.setClassComment(table.getTableComment().replaceAll("表$", ""));
-                     table.setIsTree(false);
-                     tableService.save(table);
-                     // 保存列信息
-                     Long tableId = table.getId();
-                     List<GenColumn> columns = listColumnByTableName(tableName)
-                             .parallelStream()
-                             .map(genColumn -> initColumn(tableId, genColumn))
-                             .sorted(Comparator.comparing(GenColumn::getSort))
-                             .toList();
-                     columnService.saveBatch(columns);
+                     table.setTreeShow(false);
+                     boolean save = tableService.save(table);
+                     if (save) {
+                         // 保存列信息
+                         Long tableId = table.getId();
+                         List<GenColumn> columns = listColumnByTableName(tableName)
+                                 .parallelStream()
+                                 .map(genColumn -> initColumn(tableId, genColumn))
+                                 .sorted(Comparator.comparing(GenColumn::getSort))
+                                 .toList();
+                         columnService.saveBatch(columns);
+                     }
                  });
     }
 
@@ -238,7 +240,32 @@ public class GenService {
             default -> JavaTypeEnum.STRING;
         });
         String columnName = column.getColumnName();
-        column.setHtmlType(switch (column.getJavaType()) {
+        column.setExportable(false);
+        column.setEditable(false);
+        column.setListable(false);
+        column.setQueryable(false);
+        column.setQueryType(QueryTypeEnum.NONE);
+        List<String> noEdit = List.of("create_dept", "create_by", "create_time", "update_by", "update_time", "deleted", "version");
+        if (!noEdit.contains(columnName)) {
+            column.setListable(true);
+            if (!column.getPk()) {
+                column.setExportable(true);
+                column.setEditable(true);
+            } else {
+                column.setListable(false);
+            }
+        }
+        List<String> notQuery = List.of("id", "remark");
+        if (!noEdit.contains(columnName) && !notQuery.contains(columnName) && !column.getPk()) {
+            column.setQueryable(true);
+            column.setQueryType(switch (column.getJavaType()) {
+                case LOCAL_DATE, LOCAL_DATE_TIME, LOCAL_TIME -> QueryTypeEnum.BETWEEN;
+                case STRING -> QueryTypeEnum.LIKE;
+                case BOOLEAN -> QueryTypeEnum.EQUAL;
+                default -> QueryTypeEnum.NONE;
+            });
+        }
+        column.setHtmlType(column.getEditable() ? switch (column.getJavaType()) {
             case BOOLEAN -> HtmlTypeEnum.RADIO;
             case INTEGER, LONG, BIG_DECIMAL, FLOAT, DOUBLE -> HtmlTypeEnum.INPUT_NUMBER;
             case BYTE_ARRAY -> HtmlTypeEnum.FILE_UPLOAD;
@@ -248,30 +275,7 @@ public class GenService {
             case STRING -> (column.getLength() != null && column.getLength() > 500) || column.getDataType().contains("text")
                     ? HtmlTypeEnum.TEXTAREA : HtmlTypeEnum.INPUT;
             case LIST_STRING, LIST_LONG -> HtmlTypeEnum.SELECT;
-        });
-        column.setExportable(false);
-        column.setEditable(false);
-        column.setListable(false);
-        column.setQueryable(false);
-        column.setQueryType(QueryTypeEnum.NONE);
-        List<String> notAdd = List.of("create_dept", "create_by", "create_time", "update_by", "update_time", "deleted", "version");
-        if (!notAdd.contains(columnName)) {
-            if (!column.getIsPk()) {
-                column.setExportable(true);
-                column.setEditable(true);
-            }
-            column.setListable(true);
-        }
-        List<String> notQuery = List.of("id", "remark");
-        if (!notAdd.contains(columnName) && !notQuery.contains(columnName) && !column.getIsPk()) {
-            column.setQueryable(true);
-            column.setQueryType(switch (column.getJavaType()) {
-                case LOCAL_DATE, LOCAL_DATE_TIME, LOCAL_TIME -> QueryTypeEnum.BETWEEN;
-                case STRING -> QueryTypeEnum.LIKE;
-                case BOOLEAN -> QueryTypeEnum.EQUAL;
-                default -> QueryTypeEnum.NONE;
-            });
-        }
+        } : null);
         return column;
     }
 
@@ -318,7 +322,7 @@ public class GenService {
         Set<String> baseEntityColumns = Set.of("create_dept", "create_by", "create_time", "update_by", "update_time");
         List<GenColumn> tableColumns = columnService.listByTableId(tableId);
         for (GenColumn column : tableColumns) {
-            if (column.getIsPk()) {
+            if (column.getPk()) {
                 table.setPk(column);
                 break;
             }
@@ -335,6 +339,11 @@ public class GenService {
                 columnMap.remove(column);
             }
             superEntityClass = "BaseEntity";
+            if (baseEntityColumns.contains("deleted") && baseEntityColumns.contains("version")) {
+                columnMap.remove("deleted");
+                columnMap.remove("version");
+                superEntityClass = "BaseEntity";
+            }
         }
         List<GenColumn> columns = columnMap.values().parallelStream()
                                            .peek(column -> column.setGetter("get" + StringUtils.capitalize(column.getJavaField())))
@@ -345,11 +354,11 @@ public class GenService {
                                      .filter(StringUtils::isNoneBlank)
                                      .collect(Collectors.toSet());
         if (superEntityClass != null) {
-            imports.add("cn.sijay.biu.core.base." + superEntityClass);
+            imports.add("cn.sijay.elegant.core.base." + superEntityClass);
         }
         VelocityContext context = new VelocityContext();
         context.put("superEntityClass", superEntityClass);
-        context.put("isTree", table.getIsTree());
+        context.put("isTree", table.getTreeShow());
         context.put("tableName", table.getTableName());
         context.put("classComment", StringUtils.defaultIfBlank(table.getClassComment(), "XXX"));
         context.put("ClassName", table.getClassName());
@@ -362,13 +371,12 @@ public class GenService {
         context.put("pkColumn", table.getPk());
         context.put("imports", imports);
         context.put("columns", table.getColumns());
-        context.put("queryColumns", table.getColumns().stream().filter(item -> item.getQueryable() && item.getQueryType() != QueryTypeEnum.NONE)
-                                         .toList());
+
         context.put("permPrefix", businessName + ":");
         context.put("dicts", getDicts(table));
         context.put("parentMenuId", table.getParentMenuId());
 
-        if (table.getIsTree()) {
+        if (table.getTreeShow()) {
             context.put("treeKey", table.getTreeKey());
             context.put("treeLabel", table.getTreeLabel());
             context.put("treeParentKey", table.getTreeParentKey());
@@ -376,49 +384,42 @@ public class GenService {
 
         // 获取模板列表
         List<String> templates = new ArrayList<>();
-        templates.add("vm/entity.java.vm");
-        templates.add("vm/mapper.java.vm");
-        templates.add("vm/mapper.xml.vm");
-        templates.add("vm/service.java.vm");
-        templates.add("vm/controller.java.vm");
-        templates.add("vm/sql.vm");
-        templates.add("vm/api.ts.vm");
-        if (!table.getIsTree()) {
-            templates.add("vm/index.vue.vm");
-        } else {
-            templates.add("vm/index-tree.vue.vm");
-        }
+//        templates.add("entity.java.vm");
+//        templates.add("mapper.java.vm");
+//        templates.add("mapper.xml.vm");
+//        templates.add("service.java.vm");
+//        templates.add("controller.java.vm");
+//        templates.add("sql.vm");
+        templates.add("api.ts.vm");
+//        if (!table.getIsTree()) {
+//            templates.add("index.vue.vm");
+//        } else {
+//            templates.add("index-tree.vue.vm");
+//        }
         for (String template : templates) {
             // 渲染模板
             StringWriter sw = new StringWriter();
-            Template tpl = Velocity.getTemplate(template, StandardCharsets.UTF_8.name());
+            Template tpl = Velocity.getTemplate("vm/" + template, StandardCharsets.UTF_8.name());
             tpl.merge(context, sw);
-            // 文件名称
-            String fileName = "";
             // 模块名
             String moduleName = table.getModuleName();
             // 大写类名
             String className = table.getClassName();
             // 业务名称
             String javaPath = FileUtil.concatPath("src", "main", "java", "cn", "sijay", "elegant");
-            if (template.contains("entity.java.vm")) {
-                fileName = FileUtil.concatPath(javaPath, moduleName, "entity", className + ".java");
-            } else if (template.contains("controller.java.vm")) {
-                fileName = FileUtil.concatPath(javaPath, moduleName, "controller", className + "Controller.java");
-            } else if (template.contains("service.java.vm")) {
-                fileName = FileUtil.concatPath(javaPath, moduleName, "service", className + "Service.java");
-            } else if (template.contains("mapper.java.vm")) {
-                fileName = FileUtil.concatPath(javaPath, moduleName, "mapper", className + "Mapper.java");
-            } else if (template.contains("mapper.xml.vm")) {
-                fileName = FileUtil.concatPath(javaPath, moduleName, "mapper", className + "Mapper.xml");
-            } else if (template.contains("sql.vm")) {
-                fileName = FileUtil.concatPath("sql", businessName + "Menu.sql");
-            } else if (template.contains("api.ts.vm")) {
-                fileName = FileUtil.concatPath("src", "main", "vue", "src", "api", moduleName, businessName + ".ts");
-            } else if (template.contains("index.vue.vm") || template.contains("index-tree.vue.vm")) {
-                fileName = FileUtil.concatPath("src", "main", "vue", "src", "views", moduleName, businessName + ".vue");
-            }
-            dataMap.put(fileName, sw.toString().replace("￥", "$"));
+            String xmlPath = FileUtil.concatPath("src", "main", "resources");
+            String vuePath = FileUtil.concatPath("src", "main", "vue", "src");
+            dataMap.put(switch (template) {
+                case "entity.java.vm" -> FileUtil.concatPath(javaPath, moduleName, "entity", className + ".java");
+                case "controller.java.vm" -> FileUtil.concatPath(javaPath, moduleName, "controller", className + "Controller.java");
+                case "service.java.vm" -> FileUtil.concatPath(javaPath, moduleName, "service", className + "Service.java");
+                case "mapper.java.vm" -> FileUtil.concatPath(javaPath, moduleName, "mapper", className + "Mapper.java");
+                case "mapper.xml.vm" -> FileUtil.concatPath(xmlPath, "mapper", moduleName, className + "Mapper.xml");
+                case "sql.vm" -> FileUtil.concatPath("sql", businessName + "Menu.sql");
+                case "api.ts.vm" -> FileUtil.concatPath(vuePath, "api", moduleName, businessName + ".ts");
+                case "index.vue.vm", "index-tree.vue.vm" -> FileUtil.concatPath(vuePath, "views", moduleName, businessName + ".vue");
+                default -> "";
+            }, sw.toString().replace("￥", "$"));
         }
         return dataMap;
     }

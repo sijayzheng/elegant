@@ -9,8 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static cn.sijay.elegant.gen.entity.table.GenColumnTableDef.GEN_COLUMN;
-
 /**
  * GenColumnService
  *
@@ -22,20 +20,28 @@ import static cn.sijay.elegant.gen.entity.table.GenColumnTableDef.GEN_COLUMN;
 public class GenColumnService extends ServiceImpl<GenColumnMapper, GenColumn> {
     private final GenColumnMapper genColumnMapper;
 
+    private static QueryWrapper tableIdIn(List<Long> tableIds) {
+        return QueryWrapper.create().in(GenColumn::getTableId, tableIds);
+    }
+
+    private static QueryWrapper tableIdEq(Long tableId) {
+        return QueryWrapper.create().eq(GenColumn::getTableId, tableId);
+    }
+
     public boolean removeByTableIds(List<Long> tableIds) {
-        return remove(QueryWrapper.create().where(GEN_COLUMN.TABLE_ID.in(tableIds)));
+        return remove(tableIdIn(tableIds));
     }
 
     public List<GenColumn> listByTableId(Long tableId) {
-        return list(QueryWrapper.create().select().where(GEN_COLUMN.TABLE_ID.eq(tableId)));
+        return list(tableIdEq(tableId));
     }
 
     public List<GenColumn> listByTableId(List<Long> tableIds) {
-        return list(QueryWrapper.create().select().where(GEN_COLUMN.TABLE_ID.in(tableIds)));
+        return list(tableIdIn(tableIds));
     }
 
     public boolean removeByTableId(Long tableId) {
-        return remove(QueryWrapper.create().where(GEN_COLUMN.TABLE_ID.eq(tableId)));
+        return remove(tableIdEq(tableId));
     }
 
     public List<GenColumn> listByTableName(String schemaName, String tableName) {

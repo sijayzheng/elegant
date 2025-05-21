@@ -34,8 +34,8 @@ public class GenColumn implements Serializable {
     private String columnComment;
     @Column("table_id")
     private Long tableId;
-    @Column("is_pk")
-    private Boolean isPk;
+    @Column("pk")
+    private Boolean pk;
     @Column("sort")
     private Integer sort;
     @Column("nullable")

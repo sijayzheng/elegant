@@ -30,7 +30,34 @@
     </scm>
     <properties>
         <java.version>21</java.version>
+
+        <skipTests>true</skipTests>
     </properties>
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <profiles.active>dev</profiles.active>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>com.github.gavlyukovskiy</groupId>
+                    <artifactId>p6spy-spring-boot-starter</artifactId>
+                    <version>1.10.0</version>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>prod</id>
+            <properties>
+                <profiles.active>prod</profiles.active>
+            </properties>
+        </profile>
+    </profiles>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -77,12 +104,6 @@
             <artifactId>HikariCP</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>com.github.gavlyukovskiy</groupId>
-            <artifactId>p6spy-spring-boot-starter</artifactId>
-            <version>1.10.0</version>
-        </dependency>
-
 
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -93,6 +114,12 @@
             <groupId>org.apache.velocity</groupId>
             <artifactId>velocity-engine-core</artifactId>
             <version>2.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>easyexcel</artifactId>
+            <version>4.0.3</version>
         </dependency>
 
 
@@ -126,6 +153,23 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
         </plugins>
+        <!-- 资源过滤配置 -->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering> <!-- 启用资源过滤 -->
+                <includes>
+                    <include>application*.yml</include><!-- 包含此文件 -->
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering> <!-- 禁用过滤 -->
+                <excludes>
+                    <exclude>application*.yml</exclude> <!-- 排除此文件 -->
+                </excludes>
+            </resource>
+        </resources>
     </build>
 
 </project>
