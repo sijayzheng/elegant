@@ -1,0 +1,85 @@
+package ${packageName}.${moduleName}.entity;
+
+import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
+import com.alibaba.excel.annotation.ExcelProperty;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.KeyType;
+import com.mybatisflex.annotation.Table;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.*;
+#if(${superEntityClass}!="BaseEntity")
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+#end
+
+#if(!${superEntityClass})
+import java.io.Serial;
+import java.io.Serializable;
+#end
+#foreach($import in $imports)
+import $import;
+#end
+
+/**
+ * ${ClassName}
+ * ${classComment}实体类
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+@ExcelIgnoreUnannotated
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+@ToString
+@Table("${tableName}")
+#if(${superEntityClass})
+public class ${ClassName} extends ${superEntityClass} {
+#else
+public class ${ClassName} implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+#end
+
+#foreach($column in $columns)
+    /**
+     * ${column.columnComment}
+     */
+    #if(${column.pk})
+    @Id(keyType = KeyType.Auto)
+    #end
+    #if(${column.exportable})
+    @ExcelProperty("${column.columnComment}")
+    #end
+    #if(${column.length}&&${column.javaType.value}=="String")
+    @Size(max = ${column.length}, message = "${column.columnComment}最大长度为{max}")
+    #end
+    #if(!${column.nullable})
+    @NotNull
+    #end
+    @Column(value = "${column.columnName}", comment = "${column.columnComment}"#if(${column.dataType}=="text"), isLarge = true#end)
+    private ${column.javaType.value} ${column.javaField};
+
+#end
+#foreach(${column} in ${columns})
+    #if(${column.queryable}&&${column.queryType}=="BETWEEN")
+    /**
+     * ${column.columnComment}开始
+     */
+    @Column(ignore = true)
+    private ${column.javaType.value} ${column.javaField}Start;
+
+    /**
+     * ${column.columnComment}结束
+     */
+    @Column(ignore = true)
+    private ${column.javaType.value} ${column.javaField}End;
+
+    #end
+#end
+}

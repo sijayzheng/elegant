@@ -8,10 +8,10 @@
                ordinal_position                                    as sort,
                is_nullable = 'yes'                                 as nullable,
                ifnull(character_maximum_length, numeric_precision) as length,
-               column_key = 'PRI'                                  as is_pk
+               column_key = 'PRI'                                  as pk
         from information_schema.columns
-        where table_schema = 'elegant'
-          and table_name = 'system_user'
+        where table_schema = #{schemaName}
+          and table_name = #{tableName}
         order by ordinal_position
     </select>
 </mapper>
