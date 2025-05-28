@@ -10,6 +10,10 @@ import cn.sijay.elegant.core.base.BaseException;
  */
 public class ServiceException extends BaseException {
     public ServiceException(String message) {
-        super("服务异常", message);
+        super("服务", message);
+    }
+
+    public ServiceException(String message, Object... args) {
+        super("服务", message, args);
     }
 }

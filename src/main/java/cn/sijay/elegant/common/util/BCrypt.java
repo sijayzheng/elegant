@@ -12,13 +12,13 @@ import java.security.SecureRandom;
  */
 public class BCrypt {
 
-    // BCrypt parameters
+    // BCrypt 参数
     private static final int BCRYPT_SALT_LEN = 16;
 
-    // Blowfish parameters
+    // Blowfish 参数
     private static final int BLOWFISH_NUM_ROUNDS = 16;
 
-    // Initial contents of key schedule
+    // 密钥调度表的初始内容
     private static final int[] P_orig = {
             0x243f6a88, 0x85a308d3, 0x13198a2e, 0x03707344,
             0xa4093822, 0x299f31d0, 0x082efa98, 0xec4e6c89,
@@ -285,15 +285,14 @@ public class BCrypt {
             0xb74e6132, 0xce77e25b, 0x578fdfe3, 0x3ac372e6
     };
 
-    // bcrypt IV: "OrpheanBeholderScryDoubt". The C implementation calls
-    // this "ciphertext", but it is really plaintext or an IV. We keep
-    // the name to make code comparison easier.
+    // bcrypt 初始化向量："OrpheanBeholderScryDoubt"。C语言实现中称其为"ciphertext"，
+    // 但它实际上是明文或初始化向量(IV)。保留此命名以便代码对比。
     static private final int[] bf_crypt_ciphertext = {
             0x4f727068, 0x65616e42, 0x65686f6c,
             0x64657253, 0x63727944, 0x6f756274
     };
 
-    // Table for Base64 encoding
+    // Base64 编码表
     static private final char[] base64_code = {
             '.', '/', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
             'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V',
@@ -303,7 +302,7 @@ public class BCrypt {
             '6', '7', '8', '9'
     };
 
-    // Table for Base64 decoding
+    // Base64 解码表
     static private final byte[] index_64 = {
             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
@@ -320,19 +319,18 @@ public class BCrypt {
             51, 52, 53, -1, -1, -1, -1, -1
     };
 
-    // Expanded Blowfish key
+    // 扩展后的 Blowfish 密钥
     private int[] P;
     private int[] S;
 
     /**
-     * Encode a byte array using bcrypt's slightly-modified base64
-     * encoding scheme. Note that this is *not* compatible with
-     * the standard MIME-base64 encoding.
+     * 使用 bcrypt 的改进版 Base64 编码方案对字节数组进行编码。
+     * 注意：这与标准 MIME-base64 编码不兼容。
      *
-     * @param d   the byte array to encode
-     * @param len the number of bytes to encode
-     * @return base64-encoded string
-     * @throws IllegalArgumentException if the length is invalid
+     * @param d   要编码的字节数组
+     * @param len 要编码的字节数
+     * @return Base64 编码字符串
+     * @throws IllegalArgumentException 如果长度无效
      */
     private static String encode_base64(byte[] d, int len)
             throws IllegalArgumentException {
@@ -369,11 +367,11 @@ public class BCrypt {
     }
 
     /**
-     * Look up the 3 bits base64-encoded by the specified character,
-     * range-checking againt conversion table
+     * 查找指定字符对应的 Base64 解码值（3位），
+     * 并通过转换表进行范围检查
      *
-     * @param x the base64-encoded value
-     * @return the decoded value of x
+     * @param x 经 Base64 编码的值
+     * @return x 的解码值
      */
     private static byte char64(char x) {
         if ((int) x > index_64.length) {
@@ -383,13 +381,12 @@ public class BCrypt {
     }
 
     /**
-     * Decode a string encoded using bcrypt's base64 scheme to a
-     * byte array. Note that this is *not* compatible with
-     * the standard MIME-base64 encoding.
+     * 将 bcrypt Base64 编码的字符串解码为字节数组。
+     * 注意：这与标准 MIME-base64 编码不兼容。
      *
-     * @param s the string to decode
-     * @return an array containing the decoded bytes
-     * @throws IllegalArgumentException if maxolen is invalid
+     * @param s 要解码的字符串
+     * @return 包含解码后字节的数组
+     * @throws IllegalArgumentException 如果 maxolen 无效
      */
     private static byte[] decode_base64(String s)
             throws IllegalArgumentException {
@@ -439,12 +436,11 @@ public class BCrypt {
     }
 
     /**
-     * Cycically extract a word of key material
+     * 循环提取密钥材料中的一个字(word)
      *
-     * @param data the string to extract the data from
-     * @param offp a "pointer" (as a one-entry array) to the
-     *             current offset into data
-     * @return the next word of material from data
+     * @param data 从中提取数据的字符串
+     * @param offp "指针"（单元素数组形式），指向数据中的当前偏移量
+     * @return 从数据中提取的下一个字材料
      */
     private static int streamtoword(byte[] data, int[] offp) {
         int i;
@@ -460,13 +456,16 @@ public class BCrypt {
         return word;
     }
 
+    public static String hashpw(String password) {
+        return hashpw(password, gensalt());
+    }
+
     /**
-     * Hash a password using the OpenBSD bcrypt scheme
+     * 使用 OpenBSD bcrypt 方案对密码进行哈希处理
      *
-     * @param password the password to hash
-     * @param salt     the salt to hash with (perhaps generated
-     *                 using BCrypt.gensalt)
-     * @return the hashed password
+     * @param password 要哈希的密码
+     * @param salt     用于哈希的盐值（可通过 BCrypt.gensalt 生成）
+     * @return 哈希后的密码
      */
     public static String hashpw(String password, String salt) {
         BCrypt B;
@@ -524,13 +523,12 @@ public class BCrypt {
     }
 
     /**
-     * Generate a salt for use with the BCrypt.hashpw() method
+     * 生成用于 BCrypt.hashpw() 方法的盐值
      *
-     * @param log_rounds the log2 of the number of rounds of
-     *                   hashing to apply - the work factor therefore increases as
-     *                   2**log_rounds.
-     * @param random     an instance of SecureRandom to use
-     * @return an encoded salt value
+     * @param log_rounds 哈希轮数的 log2 值 ——
+     *                   工作因子随 2**log_rounds 增加
+     * @param random     使用的 SecureRandom 实例
+     * @return 编码后的盐值
      */
     public static String gensalt(int log_rounds, SecureRandom random) {
         StringBuilder rs = new StringBuilder();
@@ -553,35 +551,32 @@ public class BCrypt {
     }
 
     /**
-     * Generate a salt for use with the BCrypt.hashpw() method
+     * 生成用于 BCrypt.hashpw() 方法的盐值
      *
-     * @param log_rounds the log2 of the number of rounds of
-     *                   hashing to apply - the work factor therefore increases as
-     *                   2**log_rounds.
-     * @return an encoded salt value
+     * @param log_rounds 哈希轮数的 log2 值
+     *                   工作因子随 2**log_rounds 增加
+     * @return 编码后的盐值
      */
     public static String gensalt(int log_rounds) {
         return gensalt(log_rounds, new SecureRandom());
     }
 
     /**
-     * Generate a salt for use with the BCrypt.hashpw() method,
-     * selecting a reasonable default for the number of hashing
-     * rounds to apply
+     * 生成用于 BCrypt.hashpw() 方法的盐值，
+     * 自动选择合理的默认哈希轮数
      *
-     * @return an encoded salt value
+     * @return 编码后的盐值
      */
     public static String gensalt() {
         return gensalt(10);
     }
 
     /**
-     * Check that a plaintext password matches a previously hashed
-     * one
+     * 验证明文密码是否与已哈希密码匹配
      *
-     * @param plaintext the plaintext password to verify
-     * @param hashed    the previously-hashed password
-     * @return true if the passwords match, false otherwise
+     * @param plaintext 待验证的明文密码
+     * @param hashed    先前哈希过的密码
+     * @return 密码匹配返回 true，否则返回 false
      */
     public static boolean checkpw(String plaintext, String hashed) {
         byte[] hashed_bytes;
@@ -600,11 +595,10 @@ public class BCrypt {
     }
 
     /**
-     * Blowfish encipher a single 64-bit block encoded as
-     * two 32-bit halves
+     * 用 Blowfish 加密一个 64 位块（由两个 32 位半块编码）
      *
-     * @param lr  an array containing the two 32-bit half blocks
-     * @param off the position in the array of the blocks
+     * @param lr  包含两个 32 位半块的数组
+     * @param off 块在数组中的位置
      */
     private void encipher(int[] lr, int off) {
         int i, n, l = lr[off], r = lr[off + 1];
@@ -630,7 +624,7 @@ public class BCrypt {
     }
 
     /**
-     * Initialise the Blowfish key schedule
+     * 初始化 Blowfish 密钥调度表
      */
     private void init_key() {
         P = P_orig.clone();
@@ -638,9 +632,9 @@ public class BCrypt {
     }
 
     /**
-     * Key the Blowfish cipher
+     * 设置 Blowfish 密钥
      *
-     * @param key an array containing the key
+     * @param key 包含密钥的数组
      */
     private void key(byte[] key) {
         int i;
@@ -666,12 +660,12 @@ public class BCrypt {
     }
 
     /**
-     * Perform the "enhanced key schedule" step described by
-     * Provos and Mazieres in "A Future-Adaptable Password Scheme"
+     * 执行 Provos 和 Mazieres 在《可适应未来的密码方案》中描述的
+     * "增强密钥调度"步骤
      * <a href="http://www.openbsd.org/papers/bcrypt-paper.ps">bcrypt-paper</a>
      *
-     * @param data salt information
-     * @param key  password information
+     * @param data 盐值信息
+     * @param key  密码信息
      */
     private void ekskey(byte[] data, byte[] key) {
         int i;
@@ -701,15 +695,13 @@ public class BCrypt {
     }
 
     /**
-     * Perform the central password hashing step in the
-     * bcrypt scheme
+     * 执行 bcrypt 方案中的核心密码哈希步骤
      *
-     * @param password   the password to hash
-     * @param salt       the binary salt to hash with the password
-     * @param log_rounds the binary logarithm of the number
-     *                   of rounds of hashing to apply
-     * @param cdata      the plaintext to encrypt
-     * @return an array containing the binary hashed password
+     * @param password   要哈希的密码
+     * @param salt       用于哈希的二进制盐值
+     * @param log_rounds 哈希轮数的二进制对数
+     * @param cdata      待加密的明文
+     * @return 包含二进制哈希密码的数组
      */
     public byte[] crypt_raw(byte[] password, byte[] salt, int log_rounds, int[] cdata) {
         int rounds, i, j;

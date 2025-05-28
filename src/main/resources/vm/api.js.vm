@@ -1,0 +1,40 @@
+/**
+ * ${classComment}接口
+ */
+export const ${className}Api = {
+  // 查询${classComment}
+  getById(id){
+    return request({ url: '/${className}/getById', method: 'get', params: { id } })
+  },
+#if(!${isTree})
+  // 分页查询${classComment}列表
+  page(params){
+    return request({ url: '/${className}/page', method: 'get', params })
+  },
+#end
+  // 查询${classComment}列表
+  list(params){
+    return request({ url: '/${className}/list', method: 'get', params })
+  },
+  // 保存${classComment}
+  add(data){
+    return request({ url: '/${className}/add', method: 'post', data })
+  },
+  // 更新${classComment}
+  update(data){
+    return request({ url: '/${className}/update', method: 'post', data })
+  },
+  // 批量删除${classComment}信息
+  remove(data){
+    return request({ url: '/${className}/remove', method: 'delete', data })
+  },
+  // 导出${classComment}
+  exportData(data) {
+    download('/${className}/export', data, `${classComment}_￥{getNowDate('_')}.xlsx`)
+  },
+  // 获取${classComment}导入模板
+  downloadTemplate() {
+    downloadTemplate('/${className}/downloadTemplate', `${classComment}_模板_￥{getNowDate('_')}.xlsx`)
+  },
+  importUrl: '/${className}/importData',
+}

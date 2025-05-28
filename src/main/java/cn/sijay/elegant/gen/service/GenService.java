@@ -121,7 +121,6 @@ public class GenService {
                  .filter(genTable -> !set.contains(genTable.getTableName()))
                  .forEach(table -> {
                      String tableName = table.getTableName();
-                     log.info(tableName);
                      table.setModuleName(StringUtils.substringBefore(tableName, "_"));
                      table.setClassName(NameUtil.snakeToUpperCamel(table.getTableName()));
                      table.setClassComment(table.getTableComment().replaceAll("表$", ""));
@@ -389,8 +388,8 @@ public class GenService {
 //        templates.add("mapper.xml.vm");
 //        templates.add("service.java.vm");
 //        templates.add("controller.java.vm");
+        templates.add("api.js.vm");
 //        templates.add("sql.vm");
-        templates.add("api.ts.vm");
 //        if (!table.getIsTree()) {
 //            templates.add("index.vue.vm");
 //        } else {
@@ -416,7 +415,7 @@ public class GenService {
                 case "mapper.java.vm" -> FileUtil.concatPath(javaPath, moduleName, "mapper", className + "Mapper.java");
                 case "mapper.xml.vm" -> FileUtil.concatPath(xmlPath, "mapper", moduleName, className + "Mapper.xml");
                 case "sql.vm" -> FileUtil.concatPath("sql", businessName + "Menu.sql");
-                case "api.ts.vm" -> FileUtil.concatPath(vuePath, "api", moduleName, businessName + ".ts");
+                case "api.js.vm" -> FileUtil.concatPath(vuePath, "api", moduleName, businessName + ".js");
                 case "index.vue.vm", "index-tree.vue.vm" -> FileUtil.concatPath(vuePath, "views", moduleName, businessName + ".vue");
                 default -> "";
             }, sw.toString().replace("￥", "$"));

@@ -1,0 +1,51 @@
+{
+  "name": "biu",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite dev --mode dev",
+    "build": "vite build --mode prod",
+    "lint:eslint": "eslint \"{src,mock,build}/**/*.{vue,ts,js,tsx,jsx}\" package.json --fix",
+    "push": "scp -r dist/* root@服务器公网IP:/服务器资源存放地址",
+    "build:push": "npm run build && npm run push"
+  },
+  "dependencies": {
+    "@element-plus/icons-vue": "^2.3.1",
+    "@vueuse/core": "^13.2.0",
+    "axios": "^1.9.0",
+    "crypto-js": "^4.2.0",
+    "dayjs": "^1.11.13",
+    "echarts": "^5.6.0",
+    "element-plus": "^2.9.10",
+    "file-saver": "^2.0.5",
+    "pinia": "^3.0.2",
+    "qs": "^6.14.0",
+    "vue": "^3.5.14",
+    "vue-pdf-embed": "^2.1.2",
+    "vue-router": "^4.5.1",
+    "vue-types": "^6.0.0",
+    "wangeditor": "^4.7.15"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^4.13.2",
+    "@iconify-json/ep": "^1.2.2",
+    "@iconify/vue": "^5.0.0",
+    "@unocss/eslint-plugin": "66.1.2",
+    "@vitejs/plugin-vue": "^5.2.4",
+    "@vitejs/plugin-vue-jsx": "^4.2.0",
+    "@vue/tsconfig": "^0.7.0",
+    "echarts-wordcloud": "^2.1.0",
+    "eslint": "^9.27.0",
+    "eslint-plugin-format": "^1.0.1",
+    "postcss": "^8.5.3",
+    "sass": "^1.89.0",
+    "unocss": "66.1.2",
+    "unplugin-auto-import": "^19.2.0",
+    "unplugin-icons": "^22.1.0",
+    "unplugin-vue-components": "^28.5.0",
+    "vite": "^6.3.5",
+    "vite-plugin-compression": "^0.5.1",
+    "vite-plugin-svg-icons": "^2.0.1"
+  }
+}
