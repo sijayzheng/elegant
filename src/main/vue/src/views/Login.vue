@@ -13,16 +13,14 @@
       <el-input v-model="formData.password" show-password type="password"/>
     </el-form-item>
     <el-form-item prop="rememberMe">
-      <el-checkbox v-model="formData.rememberMe">
-        记住我
-      </el-checkbox>
+      <el-checkbox v-model="formData.rememberMe" label="记住我"></el-checkbox>
+    </el-form-item>
+    <el-form-item>
+      <el-button :loading="loading" type="primary" @click="submitForm()">
+        登录
+      </el-button>
     </el-form-item>
   </el-form>
-  <el-form-item>
-    <el-button :loading="loading" type="primary" @click="submitForm()">
-      登录
-    </el-button>
-  </el-form-item>
 </template>
 
 <script setup>

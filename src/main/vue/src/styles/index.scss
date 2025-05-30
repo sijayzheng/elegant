@@ -92,3 +92,10 @@ a {
 .main-pagination {
   margin-top: 0.5rem;
 }
+
+
+.el-loading-mask,
+.el-overlay {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+}

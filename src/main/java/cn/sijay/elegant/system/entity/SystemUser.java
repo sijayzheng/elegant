@@ -8,6 +8,7 @@ import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.annotation.Table;
+import com.mybatisflex.core.handler.JacksonTypeHandler;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -105,19 +106,19 @@ public class SystemUser extends BaseEntity {
     /**
      * 角色
      */
-    @Column(value = "roles", comment = "角色")
+    @Column(value = "roles", comment = "角色", typeHandler = JacksonTypeHandler.class)
     private List<Long> roles;
 
     /**
      * 岗位
      */
-    @Column(value = "posts", comment = "岗位")
+    @Column(value = "posts", comment = "岗位", typeHandler = JacksonTypeHandler.class)
     private List<Long> posts;
 
     /**
      * 模块
      */
-    @Column(value = "modules", comment = "模块")
+    @Column(value = "modules", comment = "模块", typeHandler = JacksonTypeHandler.class)
     private List<Long> modules;
 
     /**

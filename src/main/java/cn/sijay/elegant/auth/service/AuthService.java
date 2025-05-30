@@ -4,6 +4,7 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.sijay.elegant.auth.entity.LoginParam;
 import cn.sijay.elegant.auth.entity.LoginResult;
 import cn.sijay.elegant.auth.entity.LoginUser;
+import cn.sijay.elegant.auth.entity.UserInfo;
 import cn.sijay.elegant.auth.helper.LoginHelper;
 import cn.sijay.elegant.common.constants.RedisConstants;
 import cn.sijay.elegant.common.util.*;
@@ -107,5 +108,19 @@ public class AuthService {
         logLogin.setMsg(msg);
         logLogin.setTime(LocalDateTime.now());
         SpringUtil.getApplicationContext().publishEvent(logLogin);
+    }
+
+    public UserInfo getUserInfo() {
+        UserInfo userInfo = new UserInfo();
+        long id = StpUtil.getLoginIdAsLong();
+        userInfo.setUser(systemUserService.getById(id));
+        userInfo.setRoles(new String[]{"admin"});
+        userInfo.setPermissions(new String[]{"*"});
+        return userInfo;
+    }
+
+    public void logout() {
+        recordLoginInfo(systemUserService.getById(StpUtil.getLoginIdAsLong()), true, "退出成功");
+        StpUtil.logout();
     }
 }

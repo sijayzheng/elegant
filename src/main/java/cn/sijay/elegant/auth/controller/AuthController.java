@@ -38,7 +38,7 @@ public class AuthController extends BaseController {
      */
     @PostMapping("/logout")
     public Result<String> logout() {
-        StpUtil.logout();
+        authService.logout();
         return success("退出成功");
     }
 
@@ -47,15 +47,7 @@ public class AuthController extends BaseController {
      */
     @GetMapping("/userinfo")
     public Result<UserInfo> userinfo() {
-        UserInfo userInfo = new UserInfo();
-        long id = StpUtil.getLoginIdAsLong();
-        SystemUser systemUser = new SystemUser();
-        systemUser.setId(id);
-        userInfo.setUser(systemUser);
-        userInfo.setRoles(new String[]{"admin"});
-        userInfo.setPermissions(new String[]{"*"});
-
-        return success(userInfo);
+               return success(authService.getUserInfo());
     }
 
     /**

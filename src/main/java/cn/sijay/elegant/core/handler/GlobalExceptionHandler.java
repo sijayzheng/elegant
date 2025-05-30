@@ -41,6 +41,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public Result<Void> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException e, HttpServletRequest request) {
+        e.printStackTrace();
         String requestURI = request.getRequestURI();
         log.error("请求地址'{}',不支持'{}'请求", requestURI, e.getMethod());
         return Result.of(HttpStatus.BAD_REQUEST.value(), e.getMessage());
@@ -51,6 +52,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(ServiceException.class)
     public Result<Void> handleServiceException(ServiceException e, HttpServletRequest request) {
+        e.printStackTrace();
         log.error(e.getMessage());
         return Result.fail(e.getMessage());
     }
@@ -61,6 +63,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(org.springframework.http.HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(SseException.class)
     public Result<Void> handleNotLoginException(SseException e, HttpServletRequest request) {
+        e.printStackTrace();
         String requestURI = request.getRequestURI();
         log.error("请求地址'{}',认证失败'{}',无法访问系统资源", requestURI, e.getMessage());
         return Result.of(HttpStatus.UNAUTHORIZED.value(), "认证失败，无法访问系统资源");
@@ -71,6 +74,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(ServletException.class)
     public Result<Void> handleServletException(ServletException e, HttpServletRequest request) {
+        e.printStackTrace();
         String requestURI = request.getRequestURI();
         log.error("请求地址'{}',发生未知异常.", requestURI, e);
         return Result.fail(e.getMessage());
@@ -81,6 +85,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(BaseException.class)
     public Result<Void> handleBaseException(BaseException e, HttpServletRequest request) {
+        e.printStackTrace();
         log.error(e.getMessage());
         return Result.fail(e.getMessage());
     }
@@ -90,6 +95,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(MissingPathVariableException.class)
     public Result<Void> handleMissingPathVariableException(MissingPathVariableException e, HttpServletRequest request) {
+        e.printStackTrace();
         String requestURI = request.getRequestURI();
         log.error("请求路径中缺少必需的路径变量'{}',发生系统异常.", requestURI);
         return Result.fail(String.format("请求路径中缺少必需的路径变量[%s]", e.getVariableName()));
@@ -100,6 +106,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public Result<Void> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e, HttpServletRequest request) {
+        e.printStackTrace();
         String requestURI = request.getRequestURI();
         log.error("请求参数类型不匹配'{}',发生系统异常.", requestURI);
         return Result.fail(String.format("请求参数类型不匹配，参数[%s]要求类型为：'%s'，但输入值为：'%s'", e.getName(), e.getRequiredType()
@@ -111,6 +118,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(NoHandlerFoundException.class)
     public Result<Void> handleNoHandlerFoundException(NoHandlerFoundException e, HttpServletRequest request) {
+        e.printStackTrace();
         String requestURI = request.getRequestURI();
         log.error("请求地址'{}'不存在.", requestURI);
         return Result.of(HttpStatus.NOT_FOUND.value(), e.getMessage());
@@ -122,6 +130,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(IOException.class)
     public void handleRuntimeException(IOException e, HttpServletRequest request) {
+        e.printStackTrace();
         String requestURI = request.getRequestURI();
         if (requestURI.contains("sse")) {
             // sse 经常性连接中断 例如关闭浏览器 直接屏蔽
@@ -135,6 +144,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(RuntimeException.class)
     public Result<Void> handleRuntimeException(RuntimeException e, HttpServletRequest request) {
+        e.printStackTrace();
         String requestURI = request.getRequestURI();
         log.error("请求地址'{}',发生未知异常.", requestURI, e);
         return Result.fail(e.getMessage());
@@ -145,6 +155,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(Exception.class)
     public Result<Void> handleException(Exception e, HttpServletRequest request) {
+        e.printStackTrace();
         String requestURI = request.getRequestURI();
         log.error("请求地址'{}',发生系统异常.", requestURI, e);
         return Result.fail(e.getMessage());
@@ -157,6 +168,7 @@ public class GlobalExceptionHandler {
     public Result<Void> constraintViolationException(ConstraintViolationException e) {
         log.error(e.getMessage());
         String message = StreamUtil.join(e.getConstraintViolations(), ConstraintViolation::getMessage, ", ");
+        e.printStackTrace();
         return Result.fail(message);
     }
 
@@ -167,6 +179,7 @@ public class GlobalExceptionHandler {
     public Result<Void> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         log.error(e.getMessage());
         String message = StreamUtil.join(e.getBindingResult().getAllErrors(), DefaultMessageSourceResolvable::getDefaultMessage, ", ");
+        e.printStackTrace();
         return Result.fail(message);
     }
 
@@ -175,6 +188,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(NotPermissionException.class)
     public Result<Void> handleNotPermissionException(NotPermissionException e, HttpServletRequest request) {
+        e.printStackTrace();
         String requestURI = request.getRequestURI();
         log.error("请求地址'{}',权限码校验失败'{}'", requestURI, e.getMessage());
         return Result.of(HttpStatus.FORBIDDEN.value(), "没有访问权限，请联系管理员授权");
@@ -185,6 +199,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(NotRoleException.class)
     public Result<Void> handleNotRoleException(NotRoleException e, HttpServletRequest request) {
+        e.printStackTrace();
         String requestURI = request.getRequestURI();
         log.error("请求地址'{}',角色权限校验失败'{}'", requestURI, e.getMessage());
         return Result.of(HttpStatus.FORBIDDEN.value(), "没有访问权限，请联系管理员授权");
@@ -195,6 +210,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(NotLoginException.class)
     public Result<Void> handleNotLoginException(NotLoginException e, HttpServletRequest request) {
+        e.printStackTrace();
         String requestURI = request.getRequestURI();
         log.error("请求地址'{}',认证失败'{}',无法访问系统资源", requestURI, e.getMessage());
         return Result.of(HttpStatus.UNAUTHORIZED.value(), "认证失败，无法访问系统资源");

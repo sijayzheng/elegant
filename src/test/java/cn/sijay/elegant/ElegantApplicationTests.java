@@ -4,7 +4,7 @@ import cn.sijay.elegant.gen.entity.GenTable;
 import cn.sijay.elegant.gen.mapper.GenTableMapper;
 import cn.sijay.elegant.gen.service.GenColumnService;
 import cn.sijay.elegant.gen.service.GenService;
-import cn.sijay.elegant.system.mapper.SystemUserMapper;
+import cn.sijay.elegant.system.service.SystemUserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,7 +17,7 @@ class ElegantApplicationTests {
     @Autowired
     private GenTableMapper genTableMapper;
     @Autowired
-    private SystemUserMapper systemUserMapper;
+    private SystemUserService systemUserService;
     @Autowired
     private GenService genService;
     @Autowired
@@ -33,7 +33,7 @@ class ElegantApplicationTests {
 
     @Test
     void testUser() {
-        System.out.println(systemUserMapper.selectOneById(2));
+        System.out.println(systemUserService.getById(1));
     }
 
     @Test

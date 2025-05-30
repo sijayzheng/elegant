@@ -4,7 +4,7 @@ import {getToken} from '@/utils/index.js'
 import loading from '@/utils/loading.js'
 import useUserStore from '@/stores/user.js'
 import useSettingStore from '@/stores/setting.js'
-import {ElMessage} from 'element-plus'
+import {ElMessage, ElMessageBox} from 'element-plus'
 
 export const staticRoutes = [
   // {
@@ -604,43 +604,73 @@ router.beforeEach((to, from, next) => {
       next()
     } else {
       const userStore = useUserStore()
+      ElMessageBox.prompt('修改初始密码', {
+        confirmButtonText: '确认',
+      }).then(() => userStore.logout().then(r => next({path: '/'})))
+        .catch(() => userStore.logout().then(r => next({path: '/'})))
       if (userStore.roles.length === 0) {
-        userStore.getInfo()
-          .then((res) => {
-            console.log(res)
-            if (res.user.pwdChanged) {
-              //         next({ path: '/user/profile' })
-              //         ElMessage({
-              //           showClose: true,
-              //           message: '您是首次登录，请先修改密码',
-              //           type: 'warning',
-              //           duration: 0,
-              //         })
-              //       } else {
-              //         userStore.setReLogin(false)
-              //         const accessRoutes = await usePermissionStore().generateRoutes()
-              //         // 根据roles权限生成可访问的路由表
-              //         accessRoutes.forEach((route) => {
-              //           if (!isHttp(route.path)) {
-              //             router.addRoute(route) // 动态添加可访问路由表
-              //           }
-              //         })
-              //         next({
-              //           path: to.path,
-              //           replace: true,
-              //           params: to.params,
-              //           query: to.query,
-              //           hash: to.hash,
-              //           name: to.name,
-              //         })
-            }
+        userStore.getInfo().then(({data}) => {
+          console.log(data)
+          if (data.user?.pwdChanged) {
             next()
-          })
-          .catch((err) => {
-            ElMessage.error(err)
-            // userStore.logout()
-            next({path: '/'})
-          })
+          } else {
+
+
+            // ElMessageBox.prompt('修改初始密码', {
+            //   confirmButtonText: '确认',
+            //   showCancelButton: false,
+            //   showClose: false,
+            //   closeOnClickModal: false,
+            //   closeOnPressEscape: false,
+            //   modalClass: 'glass-morphism',
+            //   inputValidator: (value) => {
+            //     return zxcvbn(value).score < 3
+            //   },
+            //   inputErrorMessage: '密码强调过低'
+            // })
+            //   .then(({value}) => {
+            //     ElMessage({
+            //       type: 'success',
+            //       message: `你的密码为 ${value}`,
+            //       duration: 5000
+            //     })
+            //   })
+            //   .catch(() => {
+            //     ElMessage({
+            //       type: 'error',
+            //       message: '修改失败',
+            //     })
+            //   })
+            //         next({ path: '/user/profile' })
+            //         ElMessage({
+            //           showClose: true,
+            //           message: '您是首次登录，请先修改密码',
+            //           type: 'warning',
+            //           duration: 0,
+            //         })
+            //       } else {
+            //         userStore.setReLogin(false)
+            //         const accessRoutes = await usePermissionStore().generateRoutes()
+            //         // 根据roles权限生成可访问的路由表
+            //         accessRoutes.forEach((route) => {
+            //           if (!isHttp(route.path)) {
+            //             router.addRoute(route) // 动态添加可访问路由表
+            //           }
+            //         })
+            //         next({
+            //           path: to.path,
+            //           replace: true,
+            //           params: to.params,
+            //           query: to.query,
+            //           hash: to.hash,
+            //           name: to.name,
+            //         })
+          }
+        }).catch((err) => {
+          ElMessage.error(err)
+          console.error(err)
+          userStore.logout().then(r => next({path: '/'}))
+        })
       } else {
         next()
       }
