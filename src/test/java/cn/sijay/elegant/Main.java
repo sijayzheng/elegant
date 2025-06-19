@@ -1,7 +1,5 @@
 package cn.sijay.elegant;
 
-import cn.sijay.elegant.common.util.BCrypt;
-
 /**
  * Main
  *
@@ -10,7 +8,6 @@ import cn.sijay.elegant.common.util.BCrypt;
  */
 public class Main {
     public static void main(String[] args) {
-        System.out.println(BCrypt.hashpw("123456"));
-
     }
+
 }

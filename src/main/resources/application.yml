@@ -11,6 +11,10 @@ spring:
     date-format: yyyy-MM-dd HH:mm:ss
   profiles:
     active: @profiles.active@
+  freemarker:
+    template-loader-path: classpath:/templates/
+    charset: UTF-8
+    cache: false
 
 ############## Sa-Token 配置 (文档: https://sa-token.cc) ##############
 sa-token:
@@ -32,7 +36,6 @@ sa-token:
   cookie-auto-fill-prefix: true
   # 是否输出操作日志
   is-log: true
-
 
 captcha:
   enable: false

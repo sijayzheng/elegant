@@ -3,39 +3,39 @@
     <div v-show="showSearch">
       <el-card shadow="hover">
         <el-form ref="queryFormRef" :inline="true" :model="queryParams" class="inline-form">
-          #foreach($field in $fields)
-            #if(${field.queryable}&&${field.queryType}!="BETWEEN"&&${field.queryType}!="IN")
-              #if(${field.inputType}=="input"||${field.inputType}=="textarea")
+          <#list fields as field>
+            <#if field.queryable&&field.queryType!="BETWEEN"&&field.queryType!="IN">
+              <#if field.inputType=="input"||field.inputType=="textarea">
                 <el-form-item label="${field.columnComment}：" prop="${field.fieldName}">
                   <el-input v-model="queryParams.${field.fieldName}" clearable placeholder="请输入${field.columnComment}"
                         @keyup.enter="query"/>
                 </el-form-item>
-              #elseif(${field.inputType}=="number_input")
+              <#elseif field.inputType=="number_input">
                 <el-form-item label="${field.columnComment}：" prop="${field.fieldName}">
                   <el-input-number v-model="queryParams.${field.fieldName}" clearable placeholder="请输入${field.columnComment}"
                            @keyup.enter="query"/>
                 </el-form-item>
-              #elseif(${field.inputType}=="select")
+              <#elseif field.inputType=="select">
                 <el-form-item label="${field.columnComment}：" prop="${field.fieldName}">
                   <el-select v-model="queryParams.${field.fieldName}" placeholder="请选择${field.columnComment}" clearable>
                     <el-option v-for="item in ${field.fieldName}Options" :key="item.value" :label="item.label"
                            :value="item.value"/>
                   </el-select>
                 </el-form-item>
-              #elseif(${field.inputType}=="tree_select")
+              <#elseif field.inputType=="tree_select">
                 <el-form-item label="${field.columnComment}：" prop="${field.fieldName}">
                   <el-tree-select v-model="queryParams.${field.fieldName}" :data="${field.fieldName}Options" accordion
                           check-strictly clearable filterable highlight-current placeholder="请选择${field.columnComment}"
                           clearable/>
                 </el-form-item>
-              #elseif(${field.inputType}=="checkbox")
+              <#elseif field.inputType=="checkbox">
                 <el-form-item label="${field.columnComment}：" prop="${field.fieldName}">
                   <el-checkbox-group v-model="queryParams.${field.fieldName}" clearable>
                     <el-checkbox v-for="item in ${field.fieldName}Options" :key="item.value" :label="item.label"
                            :value="item.value" border/>
                   </el-checkbox-group>
                 </el-form-item>
-              #elseif(${field.inputType}=="radio")
+              <#elseif field.inputType=="radio">
                 <el-form-item label="${field.columnComment}：" prop="${field.fieldName}">
                   <el-radio-group v-model="queryParams.${field.fieldName}" clearable>
                     <el-radio v-for="item in ${field.fieldName}Options" :key="item.value" :label="item.label" :value="item.value"
@@ -44,66 +44,66 @@
                     </el-radio>
                   </el-radio-group>
                 </el-form-item>
-              #elseif(${field.inputType}=="switch")
+              <#elseif field.inputType=="switch">
                 <el-form-item label="${field.columnComment}：" prop="${field.fieldName}">
                   <el-switch v-model="queryParams.${field.fieldName}" :active-value="true" :inactive-value="false" active-text="是"
                          inactive-text="否" inline-prompt/>
                 </el-form-item>
-              #elseif(${field.inputType}=="datetime_pick")
+              <#elseif field.inputType=="datetime_pick">
                 <el-form-item label="${field.columnComment}：" prop="${field.fieldName}">
                   <el-date-picker v-model="queryParams.${field.fieldName}" clearable type="datetime"
                           placeholder="请选择${field.columnComment}"/>
                 </el-form-item>
-              #elseif(${field.inputType}=="date_pick")
+              <#elseif field.inputType=="date_pick">
                 <el-form-item label="${field.columnComment}：" prop="${field.fieldName}">
                   <el-date-picker v-model="queryParams.${field.fieldName}" clearable type="date"
                           placeholder="请选择${field.columnComment}"/>
                 </el-form-item>
-              #elseif(${field.inputType}=="time_pick")
+              <#elseif field.inputType=="time_pick">
                 <el-form-item label="${field.columnComment}：" prop="${field.fieldName}">
                   <el-time-picker v-model="queryParams.${field.fieldName}" clearable placeholder="请选择${field.columnComment}"/>
                 </el-form-item>
-              #end
-            #elseif(${field.queryable}&&${field.queryType}=="between")
-              #if(${field.inputType}=="datetime_pick")
+              </#if>
+            <#elseif field.queryable&&field.queryType=="between">
+              <#if field.inputType=="datetime_pick">
                 <el-form-item label="${field.columnComment}：" prop="${field.fieldName}">
                   <el-date-picker v-model="queryParams.${field.fieldName}" clearable type="datetime"
                           placeholder="请选择${field.columnComment}"/>
                 </el-form-item>
-              #elseif(${field.inputType}=="date_pick")
+              <#elseif field.inputType=="date_pick">
                 <el-form-item label="${field.columnComment}：" prop="${field.fieldName}">
                   <el-date-picker v-model="queryParams.${field.fieldName}" clearable type="date"
                           placeholder="请选择${field.columnComment}"/>
                 </el-form-item>
-              #elseif(${field.inputType}=="time_pick")
+              <#elseif field.inputType=="time_pick">
                 <el-form-item label="${field.columnComment}：" prop="${field.fieldName}">
                   <el-time-picker v-model="queryParams.${field.fieldName}" clearable placeholder="请选择${field.columnComment}"/>
                 </el-form-item>
-              #end
-            #elseif(${field.queryable}&&${field.queryType}=="in")
-              #if(${field.inputType}=="select")
+              </#if>
+            <#elseif field.queryable&&field.queryType=="in">
+              <#if field.inputType=="select">
                 <el-form-item label="${field.columnComment}：" prop="${field.fieldName}">
                   <el-select v-model="queryParams.${field.fieldName}" clearable placeholder="请选择${field.columnComment}" multiple>
                     <el-option v-for="item in ${field.fieldName}Options" :key="item.value" :label="item.label"
                            :value="item.value"/>
                   </el-select>
                 </el-form-item>
-              #elseif(${field.inputType}=="tree_select")
+              <#elseif field.inputType=="tree_select">
                 <el-form-item label="${field.columnComment}：" prop="${field.fieldName}">
                   <el-tree-select v-model="queryParams.${field.fieldName}" :data="${field.fieldName}Options" accordion
                           check-strictly clearable filterable highlight-current placeholder="请选择${field.columnComment}"
                           clearable/>
                 </el-form-item>
-              #elseif(${field.inputType}=="checkbox")
+              <#elseif field.inputType=="checkbox">
                 <el-form-item label="${field.columnComment}：" prop="${field.fieldName}">
                   <el-checkbox-group v-model="queryParams.${field.fieldName}">
                     <el-checkbox v-for="item in ${field.fieldName}Options" :key="item.value" :label="item.label"
                            :value="item.value" border/>
                   </el-checkbox-group>
                 </el-form-item>
-              #end
-            #end
-          #end
+              </#if>
+            </#if>
+          </#list>
           <el-form-item>
             <el-button icon="Search" type="primary" @click="query">搜索</el-button>
             <el-button icon="Refresh" @click="resetQuery">重置</el-button>
@@ -127,21 +127,21 @@
       </template>
       <el-table v-loading="loading" :data="dataList" row-key="id" stripe @selection-change="selectionChange">
         <el-table-column align="center" type="selection" width="55"/>
-        #foreach($field in $fields)
-          #if(${field.fieldName}=="id")
+        <#list fields as field>
+          <#if field.fieldName=="id">
             <el-table-column label="编号" prop="id"/>
-          #elseif(${field.visible}&&${field.fieldName}!="parentId")
-            #if(${field.javaType}=="Boolean")
+          <#elseif field.visible&&field.fieldName!="parentId">
+            <#if field.javaType=="Boolean">
               <el-table-column :show-overflow-tooltip="true" label="${field.columnComment}" prop="${field.fieldName}">
                 <template #default="scope">
                   {{scope.row.${field.fieldName}?'是':'否'}}
                 </template>
               </el-table-column>
-            #else
+            <#else>
               <el-table-column :show-overflow-tooltip="true" label="${field.columnComment}" prop="${field.fieldName}"/>
-            #end
-          #end
-        #end
+            </#if>
+          </#if>
+        </#list>
         <el-table-column align="center" class-name="small-padding fixed-width" label="操作" width="150">
           <template #default="scope">
             <el-tooltip content="修改" placement="top">
@@ -159,78 +159,78 @@
     <el-dialog v-model="dialog.visible" :title="dialog.title">
       <el-scrollbar>
         <el-form ref="formRef" :model="formData" :rules="rules" label-position="left" label-width="120px" status-icon>
-          #foreach($field in $fields)
-            #if(${field.addable})
-              #if(${field.inputType}=="input")
+          <#list fields as field>
+            <#if field.addable>
+              <#if field.inputType=="input">
                 <el-form-item label="${field.columnComment}：" prop="${field.fieldName}">
-                <el-input#if(!${field.editable}):disable="!!formData.id"#end v-model="formData.${field.fieldName}"
+                <el-input<#if !field.editable>:disable="!!formData.id"</#if> v-model="formData.${field.fieldName}"
                   placeholder="请输入${field.columnComment}" clearable/>
                 </el-form-item>
-              #elseif(${field.inputType}=="number_input")
+              <#elseif field.inputType=="number_input">
                 <el-form-item label="${field.columnComment}：" prop="${field.fieldName}">
-                <el-input-number#if(!${field.editable}):disable="!!formData.id"#end v-model="formData.${field.fieldName}"
+                <el-input-number<#if !field.editable>:disable="!!formData.id"</#if> v-model="formData.${field.fieldName}"
                   placeholder="请输入${field.columnComment}" clearable/>
                 </el-form-item>
-              #elseif(${field.inputType}=="textarea")
+              <#elseif field.inputType=="textarea">
                 <el-form-item label="${field.columnComment}：" prop="${field.fieldName}">
-                  <el-input type="textarea"#if(!${field.editable}):disable="!!formData.id"#end v-model="formData.${field.fieldName}"
+                  <el-input type="textarea"<#if !field.editable>:disable="!!formData.id"</#if> v-model="formData.${field.fieldName}"
                         placeholder="请输入${field.columnComment}" clearable/>
                 </el-form-item>
-              #elseif(${field.inputType}=="select")
+              <#elseif field.inputType=="select">
                 <el-form-item label="${field.columnComment}：" prop="${field.fieldName}">
-                <el-select#if(!${field.editable}):disable="!!formData.id"#end v-model="formData.${field.fieldName}"
+                <el-select<#if !field.editable>:disable="!!formData.id"</#if> v-model="formData.${field.fieldName}"
                   placeholder="请选择${field.columnComment}" clearable>
                   <el-option v-for="item in ${field.fieldName}Options" :key="item.value" :label="item.label"
                          :value="item.value"/>
                   </el-select>
                 </el-form-item>
-              #elseif(${field.inputType}=="tree_select")
+              <#elseif field.inputType=="tree_select">
                 <el-form-item label="${field.columnComment}：" prop="${field.fieldName}">
-                <el-tree-select#if(!${field.editable}):disable="!!formData.id"#end v-model="formData.${field.fieldName}"
+                <el-tree-select<#if !field.editable>:disable="!!formData.id"</#if> v-model="formData.${field.fieldName}"
                   :data="${field.fieldName}Options" accordion check-strictly clearable filterable highlight-current
                   placeholder="请选择${field.columnComment}"/>
                 </el-form-item>
-              #elseif(${field.inputType}=="checkbox")
+              <#elseif field.inputType=="checkbox">
                 <el-form-item label="${field.columnComment}：" prop="${field.fieldName}">
-                  <el-checkbox-group #if(!${field.editable}):disable="!!formData.id"#end v-model="formData.${field.fieldName}">
+                  <el-checkbox-group <#if !field.editable>:disable="!!formData.id"</#if> v-model="formData.${field.fieldName}">
                     <el-checkbox v-for="item in ${field.fieldName}Options" :key="item.value" :label="item.label"
                            :value="item.value" border/>
                   </el-checkbox-group>
                 </el-form-item>
-              #elseif(${field.inputType}=="radio")
+              <#elseif field.inputType=="radio">
                 <el-form-item label="${field.columnComment}：" prop="${field.fieldName}">
-                  <el-radio-group #if(!${field.editable}):disable="!!formData.id"#end v-model="formData.${field.fieldName}">
+                  <el-radio-group <#if !field.editable>:disable="!!formData.id"</#if> v-model="formData.${field.fieldName}">
                     <el-radio v-for="item in ${field.fieldName}Options" :key="item.value" :label="item.label" :value="item.value"
                           border>{{item.label}}
                     </el-radio>
                   </el-radio-group>
                 </el-form-item>
-              #elseif(${field.inputType}=="switch")
+              <#elseif field.inputType=="switch">
                 <el-form-item label="${field.columnComment}：" prop="${field.fieldName}">
                   <el-switch
-                    #if(!${field.editable}):disable="!!formData.id"#end v-model="formData.${field.fieldName}" :active-value="true"
+                    <#if !field.editable>:disable="!!formData.id"</#if> v-model="formData.${field.fieldName}" :active-value="true"
                     :inactive-value="false" active-text="是" inactive-text="否" inline-prompt/>
                 </el-form-item>
-              #elseif(${field.inputType}=="datetime_pick")
+              <#elseif field.inputType=="datetime_pick">
                 <el-form-item label="${field.columnComment}：" prop="${field.fieldName}">
                   <el-date-picker
-                    #if(!${field.editable}):disable="!!formData.id"#end v-model="formData.${field.fieldName}" type="datetime"
+                    <#if !field.editable>:disable="!!formData.id"</#if> v-model="formData.${field.fieldName}" type="datetime"
                     placeholder="请选择${field.columnComment}" clearable/>
                 </el-form-item>
-              #elseif(${field.inputType}=="date_pick")
+              <#elseif field.inputType=="date_pick">
                 <el-form-item label="${field.columnComment}：" prop="${field.fieldName}">
                   <el-date-picker
-                    #if(!${field.editable}):disable="!!formData.id"#end v-model="formData.${field.fieldName}" type="date"
+                    <#if !field.editable>:disable="!!formData.id"</#if> v-model="formData.${field.fieldName}" type="date"
                     placeholder="请选择${field.columnComment}" clearable/>
                 </el-form-item>
-              #elseif(${field.inputType}=="time_pick")
+              <#elseif field.inputType=="time_pick">
                 <el-form-item label="${field.columnComment}：" prop="${field.fieldName}">
-                <el-time-picker#if(!${field.editable}):disable="!!formData.id"#end v-model="formData.${field.fieldName}"
+                <el-time-picker<#if !field.editable>:disable="!!formData.id"</#if> v-model="formData.${field.fieldName}"
                   placeholder="请选择${field.columnComment}" clearable/>
                 </el-form-item>
-              #end
-            #end
-          #end
+              </#if>
+            </#if>
+          </#list>
         </el-form>
       </el-scrollbar>
       <template #footer>
@@ -258,39 +258,39 @@
   })
   const initFormData = {
     id: undefined,
-    #foreach($field in $fields)
-      #if(${field.addable})
-        #if(${field.javaType}=="Boolean")
+    <#list fields as field>
+      <#if field.addable>
+        <#if field.javaType=="Boolean">
             ${field.fieldName}: true,
-        #elseif(${field.javaType}=="Double"||${field.javaType}=="Integer"||${field.javaType}=="Long"||${field.javaType}=="BigDecimal")
+        <#elseif field.javaType=="Double"||field.javaType=="Integer"||field.javaType=="Long"||field.javaType=="BigDecimal">
             ${field.fieldName}: 0,
-        #else
+        <#else>
             ${field.fieldName}: undefined,
-        #end
-      #end
-    #end
+        </#if>
+      </#if>
+  </#list>
   }
   const queryParams = ref({
-    #foreach($field in $fields)
-      #if(${field.queryable})
+    <#list fields as field>
+      <#if field.queryable>
           ${field.fieldName}: undefined,
-      #end
-    #end
+      </#if>
+    </#list>
   })
   const formData = ref({...initFormData})
   const rules = ref({
-    #foreach($field in $fields)
-      #if(${field.addable}&&${field.fieldName}!='id'&&(!${field.nullable}||${field.length}))
-          ${field.fieldName}: [#if(!${field.nullable})relus.required('${field.columnComment}'),#end #if(${field.length}&&${field.javaType}==
-          'String')relus.maxLength('${field.columnComment}', ${field.length}),#end],
-      #end
-    #end
+    <#list fields as field>
+      <#if field.addable&&field.fieldName!='id'&&(!field.nullable||field.length>)
+          ${field.fieldName}: [<#if !field.nullable>relus.required('${field.columnComment}'),</#if>
+          <#if field.length&&$field.javaType=='String'>relus.maxLength('${field.columnComment}', ${field.length}),</#if>],
+      </#if>
+    </#list>
   })
-    #foreach($field in $fields)
-      #if(${field.inputType}=="select"||${field.inputType}=="tree_select"||${field.inputType}=="checkbox"||${field.inputType}=="radio")
+    <#list fields as field>
+      <#if field.inputType=="select"||field.inputType=="tree_select"||field.inputType=="checkbox"||field.inputType=="radio">
       const ${field.fieldName}Options = ref([])
-      #end
-    #end
+      </#if>
+    </#if>
 
   /**
    * 查询${functionName}列表
@@ -397,11 +397,11 @@
   onMounted(() => {
     nextTick(() => {
       pageList()
-      #foreach($field in $fields)
-        #if(${field.inputType}=="select"||${field.inputType}=="tree_select"||${field.inputType}=="checkbox"||${field.inputType}=="radio")
+      <#list fields as field>
+        <#if field.inputType=="select"||field.inputType=="tree_select"||field.inputType=="checkbox"||field.inputType=="radio">
           commonApi.getDictOptions('${field.javaType}').then(res => ${field.fieldName}Options.value = res.data)
-        #end
-      #end
+        </#if>
+      </#list>
     })
   })
 </script>

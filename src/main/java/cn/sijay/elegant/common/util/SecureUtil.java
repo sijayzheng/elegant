@@ -200,34 +200,4 @@ public class SecureUtil {
         return EncodeUtil.base64Encode(md.digest());
     }
 
-    public static void main(String[] args) {
-        try {
-            SecretKey aesKey = generateAesKey();
-            String aes = aesEncrypt(aesKey, "123456");
-            System.out.println("aesEncrypt==" + aes);
-            System.out.println("aesDecrypt==" + aesDecrypt(aesKey, aes));
-
-            Pair<PublicKey, PrivateKey> sm2Key = generateSm2Key();
-            String s = sm2Sign(sm2Key.y(), "123456");
-            System.out.println("sm2Sign==" + s);
-            System.out.println("sm2Verify==" + sm2Verify(sm2Key.x(), "123456", s));
-
-//            String s1 = sm2Encrypt(sm2Key.x(), "123456");
-//            System.out.println("sm2Encrypt==" + s1);
-//            System.out.println("sm2Decrypt==" + sm2Decrypt(sm2Key.y(), s1));
-
-            System.out.println("sm3==" + sm3("123456"));
-            System.out.println("207cf410532f92a47dee245ce9b11ff71f578ebd763eb3bbea44ebd043d018fb");
-
-            SecretKey sm4Key = generateSm4Key();
-            String s2 = sm4Encrypt(sm4Key, "123456");
-            System.out.println("sm4Encrypt==" + s2);
-            System.out.println("sm4Decrypt==" + sm4Decrypt(sm4Key, s2));
-
-            System.out.println("sha256==" + sha256("123456"));
-            System.out.println("sha512==" + sha512("123456"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 }

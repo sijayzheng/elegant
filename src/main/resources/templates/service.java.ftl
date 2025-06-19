@@ -28,7 +28,7 @@ import java.util.List;
 @Service
 public class ${ClassName}Service extends ServiceImpl<${ClassName}Mapper, ${ClassName}> {
 
-#if(!${isTree})
+<#if !isTree>
     /**
      * 分页查询${classComment}
      *
@@ -40,7 +40,7 @@ public class ${ClassName}Service extends ServiceImpl<${ClassName}Mapper, ${Class
         return page(pageQuery.build(), buildQueryWrapper(entity));
     }
 
-#end
+</#if>
     /**
      * 查询符合条件的${classComment}列表
      *
@@ -112,16 +112,16 @@ public class ${ClassName}Service extends ServiceImpl<${ClassName}Mapper, ${Class
             return QueryWrapper.create();
         }
         return QueryWrapper.create()
-        #foreach($column in $columns)
-            #if(${column.queryable})
-                #if(${column.queryType}=="EQUAL")
+        <#list columns as column>
+            <#if column.queryable>
+                <#if column.queryType=="EQUAL">
                            .eq(${ClassName}::${column.getter}, entity.${column.getter}())
-                #elseif(${column.queryType}=="BETWEEN")
+                <#elseif column.queryType=="BETWEEN">
                            .between(${ClassName}::${column.getter}, entity.${column.getter}Start(), entity.${column.getter}End())
-                #elseif(${column.queryType}=="LIKE")
+                <#elseif column.queryType=="LIKE">
                            .like(${ClassName}::${column.getter}, entity.${column.getter}())
-                #end
-            #end
-        #end;
+                </#if>
+            </#if>
+        </#list>;
     }
 }

@@ -6,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * FileUtil
@@ -81,4 +83,19 @@ public class FileUtil {
         return String.join(File.separator, path);
     }
 
+    public static List<File> listFile(String path) {
+        List<File> list = new ArrayList<>();
+        File file = new File(path);
+        if (file.isDirectory()) {
+            File[] files = file.listFiles();
+            if (files != null) {
+                for (File f : files) {
+                    list.addAll(listFile(f.getPath()));
+                }
+            }
+        } else {
+            list.add(file);
+        }
+        return list;
+    }
 }

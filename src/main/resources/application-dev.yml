@@ -58,3 +58,9 @@ decorator:
     p6spy:
       enable-logging: true
       log-format: '%(sqlSingleLine)'
+
+proxy:
+  rules:
+    - target: http://localhost:8000
+      path: /external/py
+      timeout: 30

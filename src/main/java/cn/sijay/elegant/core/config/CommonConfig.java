@@ -108,4 +108,5 @@ public class CommonConfig {
         template.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
         return template;
     }
+    
 }

@@ -1,76 +1,76 @@
 <template>
   <el-card class="main-search" shadow="hover">
     <el-form ref="queryFormRef" :model="queryForm" inline>
-#foreach($column in $columns)
-  #if(${column.queryable}&&${column.queryType}!="NONE")
-    #if(${column.queryType}=="BETWEEN")
-      #if(${column.htmlType}=="DATE_PICKER")
+<#list columns as column>
+  <#if column.queryable&&column.queryType!="NONE">
+    <#if column.queryType=="BETWEEN">
+      <#if column.htmlType=="DATE_PICKER">
         <el-form-item label="${column.columnComment}" prop="${column.javaField}">
           <el-date-picker v-model="queryForm.${column.javaField}Range" placeholder="选择${column.javaField}日期" type="date" />
         </el-form-item>
-      #elseif(${column.htmlType}=="DATETIME_PICKER")
+      <#elseif column.htmlType=="DATETIME_PICKER">
         <el-form-item label="${column.columnComment}" prop="${column.javaField}">
           <el-date-picker v-model="queryForm.${column.javaField}Range" placeholder="选择${column.javaField}时间" type="datetime" />
         </el-form-item>
-      #elseif(${column.htmlType}=="TIME_PICKER")
+      <#elseif column.htmlType=="TIME_PICKER">
         <el-form-item label="${column.columnComment}" prop="${column.javaField}">
           <el-time-picker v-model="queryForm.${column.javaField}Range" placeholder="选择${column.javaField}时间" />
         </el-form-item>
-      #end
-    #else
-      #if(${column.htmlType}=="INPUT")
+      </#if>
+    <#else>
+      <#if column.htmlType=="INPUT">
       <el-form-item label="${column.columnComment}" prop="${column.javaField}">
         <el-input v-model="queryForm.${column.javaField}" clearable placeholder="请输入${column.columnComment}" />
       </el-form-item>
-      #elseif(${column.htmlType}=="TEXTAREA")
+      <#elseif column.htmlType=="TEXTAREA">
       <el-form-item label="${column.columnComment}" prop="${column.javaField}">
         <el-input v-model="queryForm.${column.javaField}" autosize placeholder="请输入${column.columnComment}" type="textarea" />
       </el-form-item>
-      #elseif(${column.htmlType}=="INPUT_NUMBER")
+      <#elseif column.htmlType=="INPUT_NUMBER">
       <el-form-item label="${column.columnComment}" prop="${column.javaField}">
         <el-input-number v-model="queryForm.${column.javaField}" :precision="0" :step="1" />
       </el-form-item>
-      #elseif(${column.htmlType}=="RADIO")
+      <#elseif column.htmlType=="RADIO">
       <el-form-item label="${column.columnComment}" prop="${column.javaField}">
         <el-radio-group v-model="queryForm.${column.javaField}">
           <el-radio v-for="item in ${column.javaField}Options" :key="item.value" :label="item.label" :value="item.value" />
         </el-radio-group>
       </el-form-item>
-      #elseif(${column.htmlType}=="CHECKBOX")
+      <#elseif column.htmlType=="CHECKBOX">
       <el-form-item label="${column.columnComment}" prop="${column.javaField}">
         <el-checkbox-group v-model="queryForm.${column.javaField}">
           <el-checkbox v-for="item in ${column.javaField}Options" :key="item.value" :label="item.label" :value="item.value" />
         </el-checkbox-group>
       </el-form-item>
-      #elseif(${column.htmlType}=="SELECT")
+      <#elseif column.htmlType=="SELECT">
       <el-form-item label="${column.columnComment}" prop="${column.javaField}">
         <el-select v-model="queryForm.${column.javaField}" clearable placeholder="请选择${column.columnComment}">
           <el-option v-for="item in ${column.javaField}Options" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
-      #elseif(${column.htmlType}=="TREE_SELECT")
+      <#elseif column.htmlType=="TREE_SELECT">
       <el-form-item label="${column.columnComment}" prop="${column.javaField}">
         <el-tree-select
                 v-model="queryForm.${column.javaField}" :data="${column.javaField}Options" :filter-node-method=" (v, data) => data.label.includes(v)"
                 check-strictly
         />
       </el-form-item>
-      #elseif(${column.htmlType}=="DATE_PICKER")
+      <#elseif column.htmlType=="DATE_PICKER">
       <el-form-item label="${column.columnComment}" prop="${column.javaField}">
         <el-date-picker v-model="queryForm.${column.javaField}" placeholder="选择${column.javaField}日期" type="date" />
       </el-form-item>
-      #elseif(${column.htmlType}=="DATETIME_PICKER")
+      <#elseif column.htmlType=="DATETIME_PICKER">
       <el-form-item label="${column.columnComment}" prop="${column.javaField}">
         <el-date-picker v-model="queryForm.${column.javaField}" placeholder="选择${column.javaField}时间" type="datetime" />
       </el-form-item>
-      #elseif(${column.htmlType}=="TIME_PICKER")
+      <#elseif column.htmlType=="TIME_PICKER">
       <el-form-item label="${column.columnComment}" prop="${column.javaField}">
         <el-time-picker v-model="queryForm.${column.javaField}" placeholder="选择${column.javaField}时间" />
       </el-form-item>
-      #end
-    #end
-  #end
-#end
+      </#if>
+    </#if>
+  </#if>
+</#list>
       <el-form-item>
         <el-button icon="search" type="primary" @click="listData">
           搜索
@@ -104,21 +104,21 @@
       @selection-change="(rows) => selection = rows.map(r => r.id)"
     >
       <el-table-column align="center" fixed type="selection" width="32" />
-#foreach($column in $columns)
-  #if(${column.editable})
-    #if(${column.htmlType}=="INPUT_NUMBER"&&(${column.javaType}=="BIG_DECIMAL"||${column.javaType}=="FLOAT"||${column.javaType}=="DOUBLE"))
+<#list columns as column>
+  <#if column.editable>
+    <#if column.htmlType=="INPUT_NUMBER"&&(column.javaType=="BIG_DECIMAL"||column.javaType=="FLOAT"||column.javaType=="DOUBLE">)
       <el-table-column :formatter="columnFormatter.number" label="${column.columnComment}" min-width="180" prop="${column.javaField}" sortable />
-    #elseif(${column.htmlType}=="DATE_PICKER")
+    <#elseif column.htmlType=="DATE_PICKER">
       <el-table-column :formatter="columnFormatter.zhDate" label="${column.columnComment}" min-width="180" prop="${column.javaField}" sortable />
-    #elseif(${column.htmlType}=="DATETIME_PICKER")
+    <#elseif column.htmlType=="DATETIME_PICKER">
       <el-table-column :formatter="columnFormatter.zhDateTime" label="${column.columnComment}" min-width="180" prop="${column.javaField}" sortable />
-    #elseif(${column.htmlType}=="TIME_PICKER")
+    <#elseif column.htmlType=="TIME_PICKER">
       <el-table-column :formatter="columnFormatter.zhTime" label="${column.columnComment}" min-width="180" prop="${column.javaField}" sortable />
-    #else
+    <#else>
       <el-table-column label="${column.columnComment}" min-width="180" prop="${column.javaField}" sortable />
-    #end
-  #end
-#end
+    </#if>
+  </#if>
+</#list>
       <el-table-column align="center" fixed="right" label="操作" width="90px">
         <template #default="scope">
           <el-tooltip content="修改" placement="top">
@@ -145,72 +145,72 @@
   </el-card>
   <el-dialog v-model="dialog.visible" :title="dialog.title" append-to-body width="1000px">
     <el-form ref="formRef" :model="dataForm" :rules="formRules" label-width="120px" status-icon>
-#foreach($column in $columns)
-  #if(${column.editable})
-    #if(${column.htmlType}=="INPUT")
+<#list columns as column>
+  <#if column.editable>
+    <#if column.htmlType=="INPUT">
       <el-form-item label="${column.columnComment}" prop="${column.javaField}">
         <el-input v-model="dataForm.${column.javaField}" clearable placeholder="请输入${column.columnComment}" />
       </el-form-item>
-    #elseif(${column.htmlType}=="TEXTAREA")
+    <#elseif column.htmlType=="TEXTAREA">
       <el-form-item label="${column.columnComment}" prop="${column.javaField}">
         <el-input v-model="dataForm.${column.javaField}" autosize placeholder="请输入${column.columnComment}" type="textarea" />
       </el-form-item>
-    #elseif(${column.htmlType}=="INPUT_NUMBER")
+    <#elseif column.htmlType=="INPUT_NUMBER">
       <el-form-item label="${column.columnComment}" prop="${column.javaField}">
         <el-input-number v-model="dataForm.${column.javaField}" :precision="0" :step="1" />
       </el-form-item>
-    #elseif(${column.htmlType}=="RADIO")
+    <#elseif column.htmlType=="RADIO">
       <el-form-item label="${column.columnComment}" prop="${column.javaField}">
         <el-radio-group v-model="dataForm.${column.javaField}">
           <el-radio v-for="item in ${column.javaField}Options" :key="item.value" :label="item.label" :value="item.value" />
         </el-radio-group>
       </el-form-item>
-    #elseif(${column.htmlType}=="CHECKBOX")
+    <#elseif column.htmlType=="CHECKBOX">
       <el-form-item label="${column.columnComment}" prop="${column.javaField}">
         <el-checkbox-group v-model="dataForm.${column.javaField}">
           <el-checkbox v-for="item in ${column.javaField}Options" :key="item.value" :label="item.label" :value="item.value" />
         </el-checkbox-group>
       </el-form-item>
-    #elseif(${column.htmlType}=="SELECT")
+    <#elseif column.htmlType=="SELECT">
       <el-form-item label="${column.columnComment}" prop="${column.javaField}">
         <el-select v-model="dataForm.${column.javaField}" clearable multiple placeholder="请选择${column.columnComment}">
           <el-option v-for="item in ${column.javaField}Options" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
-    #elseif(${column.htmlType}=="TREE_SELECT")
+    <#elseif column.htmlType=="TREE_SELECT">
       <el-form-item label="${column.columnComment}" prop="${column.javaField}">
         <el-tree-select
             v-model="dataForm.${column.javaField}" :data="${column.javaField}Options" :filter-node-method=" (v, data) => data.label.includes(v)"
             check-strictly
         />
       </el-form-item>
-    #elseif(${column.htmlType}=="DATE_PICKER")
+    <#elseif column.htmlType=="DATE_PICKER">
       <el-form-item label="${column.columnComment}" prop="${column.javaField}">
         <el-date-picker v-model="dataForm.${column.javaField}" placeholder="选择${column.javaField}日期" type="date" />
       </el-form-item>
-    #elseif(${column.htmlType}=="DATETIME_PICKER")
+    <#elseif column.htmlType=="DATETIME_PICKER">
       <el-form-item label="${column.columnComment}" prop="${column.javaField}">
         <el-date-picker v-model="dataForm.${column.javaField}" placeholder="选择${column.javaField}时间" type="datetime" />
       </el-form-item>
-    #elseif(${column.htmlType}=="TIME_PICKER")
+    <#elseif column.htmlType=="TIME_PICKER">
       <el-form-item label="${column.columnComment}" prop="${column.javaField}">
         <el-time-picker v-model="dataForm.${column.javaField}" placeholder="选择${column.javaField}时间" />
       </el-form-item>
-    #elseif(${column.htmlType}=="IMAGE_UPLOAD")
+    <#elseif column.htmlType=="IMAGE_UPLOAD">
     <el-form-item label="${column.columnComment}" prop="${column.javaField}">
         <!--      IMAGE_UPLOAD("图片上传"), -->
       </el-form-item>
-    #elseif(${column.htmlType}=="FILE_UPLOAD")
+    <#elseif column.htmlType=="FILE_UPLOAD">
     <el-form-item label="${column.columnComment}" prop="${column.javaField}">
         <!--      FILE_UPLOAD("文件上传"), -->
       </el-form-item>
-    #elseif(${column.htmlType}=="EDITOR")
+    <#elseif column.htmlType=="EDITOR">
     <el-form-item label="${column.columnComment}" prop="${column.javaField}">
         <!--      EDITOR("富文本"), -->
       </el-form-item>
-    #end
-  #end
-#end
+    </#if>
+  </#if>
+</#list>
     </el-form>
     <template #footer>
       <div class="dialog-footer">
@@ -263,46 +263,46 @@
   </el-dialog>
 </template>
 
-<script lang="ts" setup>
+<script setup>
 
-  const queryFormRef = ref<FormInstance>()
-const queryForm = ref<${ClassName} & PageQuery & { any?: any, arr?: any[] }>({
-#foreach($column in $columns)
-  #if(${column.queryable})
+const queryFormRef = ref()
+const queryForm = ref({
+<#list columns as column>
+  <#if column.queryable>
   ${column.javaField}: undefined,
-  #end
-#end
+  </#if>
+</#list>
   pageNum: 1,
   pageSize: 10,
 })
-const formRef = ref<FormInstance>()
-const dataForm = ref<${ClassName}>({
-#foreach($column in $columns)
-  #if(${column.editable})
+const formRef = ref()
+const dataForm = ref({
+<#list columns as column>
+  <#if column.editable>
   ${column.javaField}: undefined,
-  #end
-#end
+  </#if>
+</#list>
 })
-const formRules = ref<FormRules<${ClassName}>>({
-#foreach($column in $columns)
-  #if(${column.editable}&&(!${column.nullable}||(${column.length}&&${column.length}>0)))
+const formRules = ref({
+<#list columns as column>
+  <#if column.editable&&(!column.nullable||(column.length&&column.length>0>
   ${column.javaField}: [
-    #if(!${column.nullable})
+    <#if !column.nullable>
     { required: true, message: '${column.columnComment}不可为空', trigger: 'blur' },
-    #end
-    #if(${column.length}&&${column.length}>0)
+    </#if>
+    <#if column.length&&column.length>0>
     { max: ${column.length}, message: '${column.columnComment}最大长度为${column.length}', trigger: 'blur' },
-    #end
+    </#if>
   ],
-  #end
-#end
+  </#if>
+</#list>
 })
 const buttonLoading = ref(false)
-const tableData = ref<${ClassName}[]>([])
+const tableData = ref([])
 const tableDataLoading = ref(false)
-const total = ref<number>(0)
+const total = ref(0)
 const dialog = ref({ title: '', visible: false })
-const selection = ref<number[]>([])
+const selection = ref([])
 const uploadRef = ref()
 const upload = ref({
   visible: false,
@@ -311,26 +311,26 @@ const upload = ref({
   isUploading: false,
   headers: '',
 })
-#foreach($column in $columns)
-  #if(${column.editable})
-    #if(${column.htmlType}=="RADIO")
-const ${column.javaField}Options = ref<Option[]>([])
-    #elseif(${column.htmlType}=="CHECKBOX")
-const ${column.javaField}Options = ref<Option[]>([])
-    #elseif(${column.htmlType}=="SELECT")
-const ${column.javaField}Options = ref<Option[]>([])
-    #elseif(${column.htmlType}=="TREE_SELECT")
-const ${column.javaField}Options = ref<Option[]>([])
-    #end
-  #end
-#end
+<#list columns as column>
+  <#if column.editable>
+    <#if column.htmlType=="RADIO">
+const ${column.javaField}Options = ref([])
+    <#elseif column.htmlType=="CHECKBOX">
+const ${column.javaField}Options = ref([])
+    <#elseif column.htmlType=="SELECT">
+const ${column.javaField}Options = ref([])
+    <#elseif column.htmlType=="TREE_SELECT">
+const ${column.javaField}Options = ref([])
+    </#if>
+  </#if>
+</#list>
 
 function resetQueryForm() {
   queryFormRef.value?.resetFields()
   listData()
 }
 
-function sorted(sort: { order: string, prop: string }) {
+function sorted(sort) {
   if (sort.order) {
     queryForm.value.field = sort.prop
     queryForm.value.asc = sort.order === 'ascending'
@@ -361,7 +361,7 @@ function handleAdd() {
   dialog.value = { title: '新增部门', visible: true }
 }
 
-function handleUpdate(row: ${ClassName}) {
+function handleUpdate(row) {
   resetForm()
   ${className}Api.getById(row.id).then((res) => {
     dataForm.value = res.data
@@ -381,7 +381,7 @@ function submitForm() {
   })
 }
 
-function handleDelete(id?: number) {
+function handleDelete(id) {
   const ids = id ? [id] : selection.value
   modal.confirm(`是否确认删除部门编号为"${ids}"的数据项？`)
     .then(() => {
@@ -400,7 +400,7 @@ function handleExport() {
   ${className}Api.exportData(queryForm.value)
 }
 
-function handleFileSuccess(response: any, file: UploadFile) {
+function handleFileSuccess(response, file) {
   upload.value.visible = false
   upload.value.isUploading = false
   uploadRef.value?.handleRemove(file)
@@ -420,19 +420,19 @@ function importData() {
 
 onMounted(() => {
   listData()
-#foreach($column in $columns)
-  #if(${column.editable})
-    #if(${column.htmlType}=="RADIO")
+<#list columns as column>
+  <#if column.editable>
+    <#if column.htmlType=="RADIO">
   ${column.javaField}Options.value = []
-    #elseif(${column.htmlType}=="CHECKBOX")
+    <#elseif column.htmlType=="CHECKBOX">
   ${column.javaField}Options.value = []
-    #elseif(${column.htmlType}=="SELECT")
+    <#elseif column.htmlType=="SELECT">
   ${column.javaField}Options.value = []
-    #elseif(${column.htmlType}=="TREE_SELECT")
+    <#elseif column.htmlType=="TREE_SELECT">
   ${column.javaField}Options.value = []
-    #end
-  #end
-#end
+    </#if>
+  </#if>
+</#list>
 })
 </script>
 

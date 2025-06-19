@@ -39,7 +39,7 @@ public class ${ClassName}Controller extends BaseController {
         return success(${className}Service.getById(id));
     }
 
-#if(!${isTree})
+<#if !isTree>
     /**
      * 分页查询${classComment}列表
      *
@@ -52,7 +52,7 @@ public class ${ClassName}Controller extends BaseController {
         return success(${className}Service.page(entity, pageQuery));
     }
 
-#end
+</#if>
     /**
      * 查询符合条件的${classComment}列表
      *

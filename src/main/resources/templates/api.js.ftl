@@ -6,12 +6,12 @@ export const ${className}Api = {
   getById(id){
     return request({ url: '/${className}/getById', method: 'get', params: { id } })
   },
-#if(!${isTree})
+<#if !isTree>
   // 分页查询${classComment}列表
   page(params){
     return request({ url: '/${className}/page', method: 'get', params })
   },
-#end
+</#if>
   // 查询${classComment}列表
   list(params){
     return request({ url: '/${className}/list', method: 'get', params })
